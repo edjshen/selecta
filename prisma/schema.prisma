@@ -1,0 +1,149 @@
+// Selecta — Modern Radio Platform
+// No AI. Human curation + live broadcast only.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Radio station / curator entity
+model Station {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  avatarUrl   String?
+  isLive      Boolean  @default(false)
+  livekitIdentity String? @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  shows       Show[]
+  broadcasts  Broadcast[]
+
+  @@index([isLive])
+  @@index([slug])
+}
+
+// Vibe = Radio channel / frequency
+model Vibe {
+  id          String   @id @default(cuid())
+  name        String   @unique // "Late Night Drive", "Warehouse"
+  slug        String   @unique
+  description String?
+  color       String?  // UI accent
+  frequency   Int      @default(0) // Dial position
+  createdAt   DateTime @default(now())
+
+  // Relations
+  shows       ShowVibe[]
+  broadcasts  Broadcast[]
+
+  @@index([frequency])
+}
+
+// Show = Curated playlist / program (like a radio show)
+model Show {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  coverUrl    String?
+  isRecurring Boolean  @default(false) // Weekly show?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  stationId   String
+  station     Station  @relation(fields: [stationId], references: [id])
+  vibes       ShowVibe[]
+  episodes    Episode[]
+
+  @@index([stationId])
+}
+
+// Many-to-many: Shows <-> Vibes
+model ShowVibe {
+  id        String   @id @default(cuid())
+  showId    String
+  vibeId    String
+  createdAt DateTime @default(now())
+
+  show      Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
+  vibe      Vibe     @relation(fields: [vibeId], references: [id], onDelete: Cascade)
+
+  @@unique([showId, vibeId])
+  @@index([vibeId])
+}
+
+// Episode = Individual broadcast (live or archived)
+model Episode {
+  id          String   @id @default(cuid())
+  title       String?
+  audioUrl    String?  // Archive URL (null if live-only)
+  duration    Int?     // seconds (null until ended)
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  status      EpisodeStatus @default(LIVE)
+  
+  // Relations
+  showId      String
+  show        Show     @relation(fields: [showId], references: [id])
+  broadcast   Broadcast?
+
+  @@index([showId, startedAt])
+  @@index([status])
+}
+
+model EpisodeStatus {
+  LIVE
+  ARCHIVED
+  SCHEDULED
+}
+
+// Live broadcast session (WebRTC via LiveKit)
+model Broadcast {
+  id          String    @id @default(cuid())
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+  
+  // LiveKit
+  roomName    String    // e.g., "warehouse-rave"
+  
+  // Relations
+  stationId   String
+  station     Station   @relation(fields: [stationId], references: [id])
+  vibeId      String
+  vibe        Vibe      @relation(fields: [vibeId], references: [id])
+  episodeId   String    @unique
+  episode     Episode   @relation(fields: [episodeId], references: [id])
+
+  @@index([vibeId, startedAt])
+  @@index([stationId])
+}
+
+// Listener analytics
+model TuneIn {
+  id          String   @id @default(cuid())
+  vibeId      String
+  stationId   String?
+  tunedAt     DateTime @default(now())
+  duration    Int?     // seconds listened
+
+  @@index([tunedAt])
+  @@index([vibeId])
+}
+
+// Current state singleton (what's on the dial now)
+model NowPlaying {
+  id          String   @id @default("singleton")
+  vibeId      String?
+  isLive      Boolean  @default(false)
+  broadcastId String?
+  episodeId   String?
+  updatedAt   DateTime @updatedAt
+}

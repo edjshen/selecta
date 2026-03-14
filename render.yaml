@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: selecta-api
+    runtime: node
+    plan: free
+    buildCommand: ./render-build.sh
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: selecta-db
+          property: connectionString
+      - key: LIVEKIT_API_KEY
+        sync: false
+      - key: LIVEKIT_API_SECRET
+        sync: false
+      - key: LIVEKIT_URL
+        sync: false
+
+databases:
+  - name: selecta-db
+    plan: free
+    ipAllowList: []

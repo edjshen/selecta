@@ -1,0 +1,192 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'SF Mono', Monaco, monospace;
+  min-height: 100vh;
+}
+
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 3rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.dial {
+  margin-bottom: 3rem;
+}
+
+.dial h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.frequencies {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.frequency {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-left: 4px solid var(--vibe-color, #666);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.frequency:hover {
+  background: #222;
+  border-color: #444;
+}
+
+.frequency.active {
+  background: #222;
+  border-color: var(--vibe-color, #fff);
+  box-shadow: 0 0 20px var(--vibe-color, transparent);
+}
+
+.freq-num {
+  font-size: 1.5rem;
+  font-weight: bold;
+  min-width: 60px;
+}
+
+.freq-name {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.now-playing {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 2rem;
+  text-align: center;
+}
+
+.now-playing h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.live-broadcast {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.live-badge {
+  background: #ff0044;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.live-broadcast h4 {
+  font-size: 1.5rem;
+}
+
+.live-broadcast p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.tune-in-btn, .leave-btn {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.tune-in-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+}
+
+.tune-in-btn:hover {
+  background: #ddd;
+}
+
+.leave-btn {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.leave-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.static {
+  color: #555;
+}
+
+.static-noise {
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  margin-top: 1rem;
+  animation: noise 0.5s infinite;
+}
+
+@keyframes noise {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+  color: #666;
+  font-size: 0.8rem;
+}

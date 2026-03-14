@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 const { AccessToken } = require('livekit-server-sdk');
 require('dotenv').config();
@@ -9,6 +10,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static React build
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -247,6 +251,11 @@ app.post('/dial', async (req, res) => {
   });
 
   res.json(updated);
+});
+
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;

@@ -1,16 +1,20 @@
 #!/bin/bash
 # Render build script
 
-# Install dependencies
+# 1. Install backend dependencies
 npm install
 
-# Generate Prisma client
+# 2. Generate Prisma client & run migrations
 npx prisma generate
-
-# Run migrations (on build, for fresh deploys)
 npx prisma migrate deploy
 
-# Seed database (safe to run multiple times)
+# 3. Seed database (safe to run multiple times)
 npx prisma db seed || true
+
+# 4. Install and build frontend
+cd client
+npm install
+npm run build
+cd ..
 
 echo "✅ Build complete"
